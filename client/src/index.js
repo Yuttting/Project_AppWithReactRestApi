@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './styles/global.css';
-import './styles/index.css';
+import './styles/index.css'
 
 import { Provider } from './Context';
 import App from './App';

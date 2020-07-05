@@ -11,6 +11,8 @@ import NotFound from './components/NotFound';
 import UserSignUp from './components/UserSignUp';
 import UserSignOut from './components/UserSignOut';
 import Courses from './components/Courses';
+import CourseDetail from './components/CourseDetail';
+import Authenticated from './components/Authenticated';
 
 export default () => (
   <Router>
@@ -18,10 +20,11 @@ export default () => (
       <Header />
       <Switch>
         <Route exact path="/" component={Courses} />
-        <Route path="/authenticated" component={NotFound} />
+        <Route path="/authenticated" component={Authenticated} />
         <Route path="/signin" component={UserSignIn} />
         <Route path="/signup" component={UserSignUp}/>
         <Route path="/signout" component={UserSignOut} />
+        <Route path="/courses/:id" component={CourseDetail} />
         <Route component={NotFound} />
       </Switch>
     </div>

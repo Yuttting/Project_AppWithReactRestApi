@@ -4,7 +4,6 @@ import Form from './Form';
 
 export default class UserSignUp extends Component {
     state = {
-        name: '',
         firstName: '',
         lastName: '',
         emailAddress: '',
@@ -46,14 +45,14 @@ export default class UserSignUp extends Component {
                                     name="lastName"
                                     type="text"
                                     value={lastName}
-                                    onChange={this.cancel}
+                                    onChange={this.change}
                                     placeholder="Last Name" />
                                 <input 
                                     id="emailAddress"
                                     name="emailAddress"
                                     type="text"
                                     value={emailAddress}
-                                    onChange={this.cancel}
+                                    onChange={this.change}
                                     placeholder="Email Address" />
                                 <input 
                                     id="password"
@@ -91,10 +90,42 @@ export default class UserSignUp extends Component {
     }
 
     submit = () => {
+        const {context} = this.props;
+        const {
+            firstName,
+            lastName,
+            emailAddress,
+            password,
+            confirmPassword,
+        } = this.state
 
+        //create user
+        const user = {
+            firstName,
+            lastName,
+            emailAddress,
+            password,
+            confirmPassword,
+        };
+
+        context.data.createUser(user)
+            .then( errors => {
+                if (errors.length) {
+                    this.setState( {errors} );
+                } else {
+                context.actions.signIn(emailAddress, password)
+                    .then(() => {
+                        this.props.history.push('/authenticated')
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                this.props.history.push('/error');
+            });
     }
 
     cancel = () => {
-
+        this.props.history.push('/');
     }
 }
