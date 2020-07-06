@@ -1,10 +1,18 @@
 import React, { Component } from 'react';
 import NotFound from './NotFound';
 import Course from './Course';
+//import Data from '../Data';
 
 export default class Courses extends Component {
     
-    state = {courses: []};
+    state = {
+        courses: []
+    };
+
+    // constructor() {
+    //     super();
+    //     this.data = new Data();
+    // }
 
     async componentDidMount() {
         const apiUrl = 'http://localhost:5000/api/courses';
@@ -13,9 +21,28 @@ export default class Courses extends Component {
           .then((data) => {console.log('Courses:', data);this.setState({courses: data})})
       }
       
+    // getCourses = async () => {
+    //     const allCourses = await this.data.getCourses()
+    //         .then(() => {
+    //             if(allCourses !== null) {
+    //                 this.setState(() => {
+    //                     return {
+    //                         course: allCourses
+    //                     }
+    //                 })
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             console.error(error);
+    //         });
+        
+    //     return allCourses;
+    // }
 
     render() {
         let allCourses;
+        //const data = this.data;
+
         if (this.state.courses.length>0) {
             allCourses = this.state.courses.map( (course) => 
             <Course
@@ -27,6 +54,8 @@ export default class Courses extends Component {
         } else {
             allCourses = <NotFound />
         }
+
+        //console.log(this.getCourses())
         return (
             <div className="bounds"> 
                 {allCourses}

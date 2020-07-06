@@ -27,7 +27,7 @@ export class Provider extends Component {
         };
 
         return (
-            <Context.Provider>
+            <Context.Provider value={value}>
                 {this.props.children}
             </Context.Provider>
         );
@@ -36,12 +36,22 @@ export class Provider extends Component {
     signIn = async(emailAddress, password) => {
         const user = await this.data.getUser(emailAddress, password);
         if(user !== null){
-            
+            this.setState(() => {
+                return {
+                    authenticatedUser: user,
+                };
+            });
+            const cookieOptions = {
+                expire: 100
+            };
+            Cookies.set('authenticatedUser', JSON.stringify(user), {cookieOptions})
         }
+        return user;
     }
 
     signOut = () => {
-
+        this.setState({ authenticatedUser: null});
+        Cookies.remove('authenticatedUser');
     }
 }
 
