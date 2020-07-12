@@ -41,10 +41,11 @@ export class Provider extends Component {
                     authenticatedUser: user,
                 };
             });
-            const cookieOptions = {
-                expire: 100
-            };
-            Cookies.set('authenticatedUser', JSON.stringify(user), {cookieOptions})
+            // const cookieOptions = {
+            //     expire: 100
+            // };
+            //Cookies.set('authenticatedUser', JSON.stringify(user), {cookieOptions});
+            Cookies.set('authenticatedUser', JSON.stringify(user));
         }
         return user;
     }

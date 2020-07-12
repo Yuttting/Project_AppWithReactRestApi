@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import NotFound from './NotFound';
 import Course from './Course';
-//import Data from '../Data';
+import config from '../config';
+
 
 export default class Courses extends Component {
     
@@ -9,39 +10,15 @@ export default class Courses extends Component {
         courses: []
     };
 
-    // constructor() {
-    //     super();
-    //     this.data = new Data();
-    // }
-
     async componentDidMount() {
-        const apiUrl = 'http://localhost:5000/api/courses';
+        const apiUrl = `${config.apiBaseUrl}/courses`;
         await fetch(apiUrl)
           .then((response) => response.json())
           .then((data) => {console.log('Courses:', data);this.setState({courses: data})})
       }
-      
-    // getCourses = async () => {
-    //     const allCourses = await this.data.getCourses()
-    //         .then(() => {
-    //             if(allCourses !== null) {
-    //                 this.setState(() => {
-    //                     return {
-    //                         course: allCourses
-    //                     }
-    //                 })
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             console.error(error);
-    //         });
-        
-    //     return allCourses;
-    // }
 
     render() {
         let allCourses;
-        //const data = this.data;
 
         if (this.state.courses.length>0) {
             allCourses = this.state.courses.map( (course) => 
@@ -55,12 +32,11 @@ export default class Courses extends Component {
             allCourses = <NotFound />
         }
 
-        //console.log(this.getCourses())
         return (
             <div className="bounds"> 
                 {allCourses}
                 <div className="grid-33">
-                    <a className="course--module course--add--module" href="create-course.html">
+                    <a className="course--module course--add--module" href="create-course">
                         <h3 className="course--add--title">
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 13 13" className="add">
                         <polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 "></polygon>

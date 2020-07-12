@@ -94,7 +94,14 @@ router.post('/users', [
         .exists({ checkNull: true, checkFalsy: true })
         .withMessage('Please provide a value for "emailAddress"')
         .isEmail()
-        .withMessage('Please provide a valid "emailAddress"'),
+        .withMessage('Please provide a valid "emailAddress"')
+        .custom(value => {
+          return User.findOne({where:{emailAddress: value}}).then(user => {
+            if (user) {
+              return Promise.reject('E-mail already in use');
+            }
+          });
+        }),
     check('password')
         .exists({ checkNull: true, checkFalsy: true })
         .withMessage('Please provide a value for "password"'),

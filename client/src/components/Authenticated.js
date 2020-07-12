@@ -8,5 +8,5 @@ export default ({ context }) => {
                 <h1>{authUser.firstName} is authenticated!</h1>
             </div>
         </div>
-    )
+    );
 }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import config from '../config';
 
 export default class CourseDetail extends Component {
     state = {
@@ -6,10 +7,10 @@ export default class CourseDetail extends Component {
     }
 
     async componentDidMount() {
-        const apiUrl = `http://localhost:5000/api/${this.props.match.url}`;
+        const apiUrl = `${config.apiBaseUrl}/${this.props.match.url}`;
         await fetch(apiUrl)
           .then((response) => response.json())
-          .then((data) => {console.log('Courses:', data);this.setState({course: data})})
+          .then((data) => {this.setState({course: data})})
     }
 
     render() {
@@ -37,10 +38,10 @@ export default class CourseDetail extends Component {
                 <div className="bounds">
                     <div className="grid-100">
                         <span>
-                            <a className="button" href="update-course.html">Update Course</a>
-                            <a className="button" href="#">Delete Course</a>
+                            <a className="button" href="update-course">Update Course</a>
+                            <a className="button" href="/">Delete Course</a>
                         </span>
-                            <a className="button button-secondary" href="index.html">Return to List</a></div>
+                            <a className="button button-secondary" href="/">Return to List</a></div>
                 </div>
             </div>
             
