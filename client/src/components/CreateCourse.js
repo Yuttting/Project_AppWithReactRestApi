@@ -1,23 +1,32 @@
 import React, { Component } from 'react';
 import Form from './Form';
+import Data from '../Data';
 
 export default class CreateCourse extends Component {
+    
+    constructor() {
+        super();
+        this.data = new Data();
+    }
+
     state = {
         title: '',
         description: '',
         estimatedTime: '',
         materialNeeded: '',
-        errors: [],
+        errors: [], 
     }
 
     render() {
+        const { context } = this.props;
         const {
             title,
             description,
             estimatedTime,
             materialNeeded,
-            errors
+            errors,
         } = this.state;
+
 
         return (
             <div className="bounds course--detail">
@@ -40,7 +49,7 @@ export default class CreateCourse extends Component {
                                         onChange={this.change}
                                         placeholder="Course title..."
                                         className="input-title course--title--input" />
-                                    <p>By Joe Smith</p>
+                                    <p>By {context.authenticatedUser.firstName} {context.authenticatedUser.lastName}</p>
                                 </div>
                                     <textarea 
                                         id="description"
@@ -96,10 +105,54 @@ export default class CreateCourse extends Component {
     };
 
     submit = () => {
+        const { context } = this.props;
+        //const { from } = this.props.location.state || {from: {pathname: '/authenticated'}}
+        const { emailAddress, password, id } = context.authenticatedUser;
+        const userId = id;
+        const {
+            title,
+            description,
+            estimatedTime,
+            materialNeeded,
+        } = this.state;
 
+
+        //create course
+        const course = {
+            title,
+            description,
+            estimatedTime,
+            materialNeeded,
+            userId,
+        } 
+
+        console.log(userId)
+        context.data.createCourse(course, emailAddress, password)
+            .then((errors) => {
+                if (errors && errors.length > 0) {
+                    this.setState({ errors });
+                  } else {
+                    this.props.history.push('/');
+                }
+            })
+            // (user) => {
+            //     if(user === null) {
+            //     this.setState(()=>{
+            //         return { errors: ['Sign-in to create a course']}
+            //     });
+            //     } else {
+            //     //this.props.history.push(from);
+            //     //this.props.history.push('/');
+            //     this.props.history.push(`/courses/${this.props.match.params.id}`)
+            //     }
+            // })
+            .catch((err) => {
+                console.error(err);
+                this.props.history.push('/error');
+            });
     };
 
     cancel = () => {
-
+        this.props.history.push('/');
     };
 }

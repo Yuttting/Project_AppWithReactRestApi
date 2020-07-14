@@ -16,13 +16,13 @@ export class Provider extends Component {
     }
 
     render() {
-        const {authenticatedUser} = this.state;
+        const { authenticatedUser } = this.state;
         const value = {
             authenticatedUser,
             data: this.data,
             actions: {
                 signIn: this.signIn,
-                signOut: this.signOut
+                signOut: this.signOut,
             },
         };
 
@@ -41,11 +41,7 @@ export class Provider extends Component {
                     authenticatedUser: user,
                 };
             });
-            // const cookieOptions = {
-            //     expire: 100
-            // };
-            //Cookies.set('authenticatedUser', JSON.stringify(user), {cookieOptions});
-            Cookies.set('authenticatedUser', JSON.stringify(user));
+            Cookies.set('authenticatedUser', JSON.stringify(user), { expires: 7 });
         }
         return user;
     }

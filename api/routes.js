@@ -11,7 +11,7 @@ const auth = require('basic-auth');
 /**
  * Middleware to authenticate the request using Basic Authentication.
  * @param {Request} req - The Express Request object.
- * @param {Response} res - The Express Reßsponse object.
+ * @param {Response} res - The Express Response object.
  * @param {Function} next - The function to call to pass execution to the next middleware.
  */
 const authenticateUser = async (req, res, next) => {
@@ -25,26 +25,32 @@ const authenticateUser = async (req, res, next) => {
   
     // Get the user's credentials from the Authorization header.
     const credentials = auth(req);
+    // console.log(credentials)
+    // console.log(req.body)
   
     if (credentials) {
       // Look for a user whose `emailAddress` matches the credentials `name` property.
       const userObj = users.find(u => u.dataValues.emailAddress === credentials.name);
-      const user = userObj.dataValues;
+      
       //const user = user.find({emailAddress: credentials.name});
   
-      if (user) {
+      if (userObj) {
+        const user = userObj.dataValues;
         const authenticated = bcryptjs
-          .compareSync(credentials.pass, user.password);
+          .compare(credentials.pass, user.password);
+        // console.log(credentials.pass)
+        // console.log(user.password)
+        // console.log(authenticated)
         if (authenticated) {
-          console.log(`Authentication successful for user: ${user.firstName} ${user.lastName}`);
-  
           // Store the user on the Request object.
           req.currentUser = user;
+          console.log(`Authentication successful for user: ${user.firstName} ${user.lastName}`);
         } else {
           message = `Authentication failure for user: ${user.firstName} ${user.lastName}`;
         }
       } else {
-        message = `User not found for user: ${user.firstName} ${user.lastName}`;
+        console.log(credentials)
+        message = `User not found for user: ${credentials.name}`;
       }
     } else {
       message = 'Auth header not found';
@@ -78,7 +84,8 @@ router.get('/users', authenticateUser, asyncHandler(async(req, res) => {
         id: user.id,
         firstName: user.firstName,
         lastName: user.lastName,
-        emailAddress: user.emailAddress
+        emailAddress: user.emailAddress,
+        password: user.password
     });
 }));
 
@@ -122,6 +129,7 @@ router.post('/users', [
     let user = req.body;
   
     // Hash the new user's password.
+    //var salt = bcrypt.genSaltSync(10);
     user.password = bcryptjs.hashSync(user.password);
   
     // Add the user to the `users` database.

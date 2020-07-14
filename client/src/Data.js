@@ -9,15 +9,17 @@ export default class Data {
             headers:{
                 'Content-Type': 'application/json; charset=utf-8',
             },
+            //credentials: 'include'
         };
 
         if(body != null) {
             options.body = JSON.stringify(body);
         }
 
-        if(requiresAuth) {
-            const encodedCredentials = btoa(`${credentials.emailAddress}:${credentials.password}`);
-            options.headers['Authorization'] = `Basic ${encodedCredentials}`;
+        if (requiresAuth) {
+          const encodedCredentials = btoa(`${credentials.emailAddress}:${credentials.password}`);
+          options.headers['Authorization'] = `Basic ${encodedCredentials}`;
+          console.log(options)
         }
 
         return fetch(url, options);
@@ -29,7 +31,9 @@ export default class Data {
           return response.json().then(data => data);
         }
         else if (response.status === 401) {
-          return null;
+          return response.json().then(data => {
+            return data.errors;
+        });
         }
         else {
           throw new Error();
@@ -51,17 +55,61 @@ export default class Data {
         }
     }
 
-    // async createCourses(user) {
-    //     const response = await this.api('/users', 'POST'. user);
-    //     if (response.status === 201) {
-    //         return [];
-    //     } else if (response.status === 400) {
-    //         return response.json().then(data => {
-    //             return data.errors;
-    //         });
-    //     }
-    //     else {
-    //         throw new Error();
-    //     }
+    async createCourse(course, emailAddress, password) {
+        const response = await this.api('/courses', 'POST', course, true, {emailAddress, password});
+        if (response.status === 201) {
+            return [];
+        } else if (response.status === 400) {
+            return response.json().then(data => {
+                return data.errors;
+            });
+        }
+        else {
+            throw new Error();
+        }
+    }
+
+    // async getCourseDetail(id) {
+    //   const response = await this.api(`/courses/${id}`, 'GET');
+    //   if (response.status === 200) {
+    //       return [];
+    //   } else if (response.status === 400) {
+    //       return response.json().then(data => {
+    //           return data.errors;
+    //       });
+    //   }
+    //   else {
+    //       throw new Error();
+    //   }
     // }
+
+    async deleteCourse(id, emailAddress, password) {
+      const response = await this.api(`/courses/${id}`, 'DELETE', null, true, {emailAddress, password})
+      if (response.status === 200) {
+        return [];
+      }
+      else if (response.status === 403) {    //403 forgidden
+        return response.json().then(data => {
+          return data.errors;
+        });
+      }
+      else {
+        throw new Error();
+      }
+    }
+
+    async updateCourse(id, course, emailAddress, password) {
+      const response = await this.api(`/courses/${id}`, 'PUT', course, true, {emailAddress, password})
+        if (response.status === 204) {
+          return [];
+        }
+        else if (response.status === 400|| response.status === 403) {   
+          return response.json().then(data => {
+            return data.errors;
+          });
+        }
+        else {
+          throw new Error();
+        }
+    }
 }

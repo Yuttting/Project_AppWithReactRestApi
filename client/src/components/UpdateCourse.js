@@ -7,7 +7,7 @@ export default class CreateCourse extends Component {
         title: '',
         description: '',
         estimatedTime: '',
-        materialNeeded: '',
+        materialsNeeded: '',
         errors: [],
     }
 
@@ -19,16 +19,17 @@ export default class CreateCourse extends Component {
             title: data.title,
             description: data.description,
             estimatedTime: data.estimatedTime,
-            materialNeeded: data.materialNeeded,
+            materialsNeeded: data.materialsNeeded,
             })})
     }
 
     render() {
+        const { context } = this.props;
         const {
             title,
             description,
             estimatedTime,
-            materialNeeded,
+            materialsNeeded,
             errors
         } = this.state;
 
@@ -55,7 +56,7 @@ export default class CreateCourse extends Component {
                                         onChange={this.change}
                                         placeholder="Course title..."
                                         className="input-title course--title--input" />
-                                    <p>By Joe Smith</p>
+                                    <p>By {context.authenticatedUser.firstName} {context.authenticatedUser.lastName}</p>
                                 </div>
                                     <textarea 
                                         id="description"
@@ -83,10 +84,10 @@ export default class CreateCourse extends Component {
                                         <li className="course--stats--list--item">
                                             <h4>Materials Needed</h4>
                                             <textarea 
-                                                id="materialNeeded"
-                                                name="materialNeeded"
+                                                id="materialsNeeded"
+                                                name="materialsNeeded"
                                                 type="text"
-                                                value={materialNeeded}
+                                                value={materialsNeeded}
                                                 onChange={this.change}
                                                 placeholder="List materials..." />
                                         </li>
@@ -115,6 +116,6 @@ export default class CreateCourse extends Component {
     };
 
     cancel = () => {
-
+        this.props.history.push('/');
     };
 }

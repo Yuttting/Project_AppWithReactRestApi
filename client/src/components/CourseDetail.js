@@ -3,7 +3,7 @@ import config from '../config';
 
 export default class CourseDetail extends Component {
     state = {
-        course: []
+        course: [],
     }
 
     async componentDidMount() {
@@ -11,9 +11,14 @@ export default class CourseDetail extends Component {
         await fetch(apiUrl)
           .then((response) => response.json())
           .then((data) => {this.setState({course: data})})
+        // const id = this.props.match.params.id;
+        // await this.props.context.data.getCourseDetail(id) 
+        //   .then((response) => {console.log(response);this.setState({course: response})})
+            
     }
 
     render() {
+
         let arr;
         let material;
         if(this.state.course.materialsNeeded) {
@@ -39,7 +44,8 @@ export default class CourseDetail extends Component {
                     <div className="grid-100">
                         <span>
                             <a className="button" href="update-course">Update Course</a>
-                            <a className="button" href="/">Delete Course</a>
+                            {/* <a className="button" href="/">Delete Course</a> */}
+                            <button className="button" onClick={this.delete}>Delete Course</button>
                         </span>
                             <a className="button button-secondary" href="/">Return to List</a></div>
                 </div>
@@ -75,6 +81,29 @@ export default class CourseDetail extends Component {
             </div>
             </div>
         )
+    }
+
+    delete = () => {
+        const { context } = this.props;
+        console.log(context)
+        const id = this.props.match.params.id
+        if (context.authenticatedUser){
+            const { password, emailAddress } = context.authenticatedUser;
+            context.data.deleteCourse(id, emailAddress, password)
+                .then( errors => {
+                    if (errors && errors.length > 0) {
+                        this.setState({ errors });
+                    } else {
+                        this.props.history.push('/'); 
+                    }
+                  })
+                .catch((err) => {
+                console.log(err);
+                this.props.history.push('/error');
+                });
+        } else {
+            this.props.history.push('/authenticated'); 
+        }
     }
 }
 
