@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import config from '../config';
+import {Link} from 'react-router-dom';
 
 export default class CourseDetail extends Component {
     state = {
@@ -7,14 +7,13 @@ export default class CourseDetail extends Component {
     }
 
     async componentDidMount() {
-        const apiUrl = `${config.apiBaseUrl}/${this.props.match.url}`;
-        await fetch(apiUrl)
-          .then((response) => response.json())
-          .then((data) => {this.setState({course: data})})
-        // const id = this.props.match.params.id;
-        // await this.props.context.data.getCourseDetail(id) 
-        //   .then((response) => {console.log(response);this.setState({course: response})})
-            
+        const { context } = this.props;
+        context.data.getCourseDetail(this.props.match.params.id)
+            .then(response => {
+                this.setState({
+                    course: response,
+                })
+            })
     }
 
     render() {
@@ -43,11 +42,11 @@ export default class CourseDetail extends Component {
                 <div className="bounds">
                     <div className="grid-100">
                         <span>
-                            <a className="button" href="update-course">Update Course</a>
+                            <Link className="button" to={`/courses/${this.state.course.id}/update-course`}>Update Course</Link>
                             {/* <a className="button" href="/">Delete Course</a> */}
                             <button className="button" onClick={this.delete}>Delete Course</button>
                         </span>
-                            <a className="button button-secondary" href="/">Return to List</a></div>
+                            <Link className="button button-secondary" to="/">Return to List</Link></div>
                 </div>
             </div>
             
@@ -85,25 +84,23 @@ export default class CourseDetail extends Component {
 
     delete = () => {
         const { context } = this.props;
-        console.log(context)
         const id = this.props.match.params.id
         if (context.authenticatedUser){
             const { password, emailAddress } = context.authenticatedUser;
             context.data.deleteCourse(id, emailAddress, password)
                 .then( errors => {
-                    if (errors && errors.length > 0) {
-                        this.setState({ errors });
-                    } else {
+                    if (errors && errors.length === 0) {
                         this.props.history.push('/'); 
+                    } else {
+                        this.setState({ errors });
+                        this.props.history.push('/forbidden'); 
                     }
                   })
                 .catch((err) => {
-                console.log(err);
-                this.props.history.push('/error');
-                });
-        } else {
-            this.props.history.push('/authenticated'); 
-        }
+                    console.log(err);
+                    this.props.history.push('/error')
+                })
+        } 
     }
 }
 

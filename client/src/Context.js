@@ -68,4 +68,4 @@ export default function withContext(Component) {
              </Context.Consumer>
          );
      }
- }
+}

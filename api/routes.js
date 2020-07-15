@@ -36,11 +36,8 @@ const authenticateUser = async (req, res, next) => {
   
       if (userObj) {
         const user = userObj.dataValues;
-        const authenticated = bcryptjs
-          .compare(credentials.pass, user.password);
-        // console.log(credentials.pass)
-        // console.log(user.password)
-        // console.log(authenticated)
+        const authenticated = await bcryptjs
+          .compare(credentials.pass, user.password)
         if (authenticated) {
           // Store the user on the Request object.
           req.currentUser = user;

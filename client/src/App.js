@@ -44,8 +44,8 @@ export default () => (
         <Route exact path="/courses/:id" component={CourseDetailWithContext} />
         <PrivateRoute path="/create-course" component={CreateCourseWithContext} />
         <PrivateRoute path="/courses/:id/update-course" component={UpdateCourseWithContext} />
-        {/* <Route path="/error" component={UnhandledError} /> */}
-        {/* <Route path="forbidden" component={Forbidden} /> */}
+        <Route path="/error" component={UnhandledError} />
+        <Route path="/forbidden" component={Forbidden} />
         <Route component={NotFound} />
       </Switch>
     </div>

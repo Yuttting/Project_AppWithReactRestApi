@@ -13,7 +13,7 @@ export default class CreateCourse extends Component {
         title: '',
         description: '',
         estimatedTime: '',
-        materialNeeded: '',
+        materialsNeeded: '',
         errors: [], 
     }
 
@@ -23,7 +23,7 @@ export default class CreateCourse extends Component {
             title,
             description,
             estimatedTime,
-            materialNeeded,
+            materialsNeeded,
             errors,
         } = this.state;
 
@@ -77,10 +77,10 @@ export default class CreateCourse extends Component {
                                         <li className="course--stats--list--item">
                                             <h4>Materials Needed</h4>
                                             <textarea 
-                                                id="materialNeeded"
-                                                name="materialNeeded"
+                                                id="materialsNeeded"
+                                                name="materialsNeeded"
                                                 type="text"
-                                                value={materialNeeded}
+                                                value={materialsNeeded}
                                                 onChange={this.change}
                                                 placeholder="List materials..." />
                                         </li>
@@ -113,7 +113,7 @@ export default class CreateCourse extends Component {
             title,
             description,
             estimatedTime,
-            materialNeeded,
+            materialsNeeded,
         } = this.state;
 
 
@@ -122,11 +122,10 @@ export default class CreateCourse extends Component {
             title,
             description,
             estimatedTime,
-            materialNeeded,
+            materialsNeeded,
             userId,
         } 
 
-        console.log(userId)
         context.data.createCourse(course, emailAddress, password)
             .then((errors) => {
                 if (errors && errors.length > 0) {
@@ -135,17 +134,6 @@ export default class CreateCourse extends Component {
                     this.props.history.push('/');
                 }
             })
-            // (user) => {
-            //     if(user === null) {
-            //     this.setState(()=>{
-            //         return { errors: ['Sign-in to create a course']}
-            //     });
-            //     } else {
-            //     //this.props.history.push(from);
-            //     //this.props.history.push('/');
-            //     this.props.history.push(`/courses/${this.props.match.params.id}`)
-            //     }
-            // })
             .catch((err) => {
                 console.error(err);
                 this.props.history.push('/error');

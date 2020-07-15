@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Form from './Form';
-import config from '../config';
 
 export default class CreateCourse extends Component {
     state = {
@@ -12,15 +11,16 @@ export default class CreateCourse extends Component {
     }
 
     async componentDidMount() {
-        const apiUrl = `${config.apiBaseUrl}/courses/${this.props.match.params.id}`;
-        await fetch(apiUrl)
-          .then((response) => response.json())
-          .then((data) => {console.log(data);this.setState({
-            title: data.title,
-            description: data.description,
-            estimatedTime: data.estimatedTime,
-            materialsNeeded: data.materialsNeeded,
-            })})
+        const { context } = this.props;
+        context.data.getCourseDetail(this.props.match.params.id)
+            .then(response => {
+                this.setState({
+                    title: response.title,
+                    description: response.description,
+                    estimatedTime: response.estimatedTime,
+                    materialsNeeded: response.materialsNeeded,
+                })
+            })
     }
 
     render() {
@@ -32,8 +32,6 @@ export default class CreateCourse extends Component {
             materialsNeeded,
             errors
         } = this.state;
-
-        console.log(title)
 
         return (
             <div className="bounds course--detail">
@@ -76,7 +74,7 @@ export default class CreateCourse extends Component {
                                                 id="estimatedTime"
                                                 name='estimatedTime'
                                                 type="text"
-                                                value={estimatedTime}
+                                                value={estimatedTime || "" }
                                                 onChange={this.change}
                                                 placeholder="Hours" 
                                                 className="course--time--input" />
@@ -87,7 +85,7 @@ export default class CreateCourse extends Component {
                                                 id="materialsNeeded"
                                                 name="materialsNeeded"
                                                 type="text"
-                                                value={materialsNeeded}
+                                                value={materialsNeeded || "" }
                                                 onChange={this.change}
                                                 placeholder="List materials..." />
                                         </li>
@@ -100,6 +98,7 @@ export default class CreateCourse extends Component {
         );
     }
 
+    
     change = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -112,7 +111,39 @@ export default class CreateCourse extends Component {
     };
 
     submit = () => {
+        const { context } = this.props;
+        const {emailAddress, password, id} = context.authenticatedUser;
+        const userId = id;
 
+        const {
+            title,
+            description,
+            estimatedTime,
+            materialsNeeded,
+         } = this.state;
+
+         const course = {
+            title,
+            description,
+            estimatedTime,
+            materialsNeeded,
+            userId,
+         }
+
+         const courseId = this.props.match.params.id;
+         context.data.updateCourse(courseId, course, emailAddress, password)
+            .then (errors => {
+                if (errors && errors.length === 0) {
+                    this.props.history.push(`/courses/${courseId}`); 
+                } else {
+                    this.setState({ errors });
+                    this.props.history.push('/forbidden'); 
+                }
+              })
+            .catch((err) => {
+                console.log(err);
+                this.props.history.push('/error')
+            })
     };
 
     cancel = () => {

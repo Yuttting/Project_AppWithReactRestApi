@@ -19,7 +19,6 @@ export default class Data {
         if (requiresAuth) {
           const encodedCredentials = btoa(`${credentials.emailAddress}:${credentials.password}`);
           options.headers['Authorization'] = `Basic ${encodedCredentials}`;
-          console.log(options)
         }
 
         return fetch(url, options);
@@ -30,7 +29,7 @@ export default class Data {
         if (response.status === 200) {
           return response.json().then(data => data);
         }
-        else if (response.status === 401) {
+        else if (response.status === 401) {   //401 Unauthorized
           return response.json().then(data => {
             return data.errors;
         });
@@ -39,7 +38,39 @@ export default class Data {
           throw new Error();
         }
     }
+    
+    async getCourses() {
+      const response = await this.api('/courses', 'GET');
+      if (response.status === 200) {
+        return response.json().then(data => data);
+      }
+      else if (response.status === 400) {   
+        return response.json().then(data => {
+          return data.errors;
+        });
+      }
+      else {
+        throw new Error();
+      }
       
+    }
+
+    async getCourseDetail(id) {
+      const response = await this.api(`/courses/${id}`, 'GET');
+      if (response.status === 200) {
+        return response.json().then(data => data);
+      }
+      else if (response.status === 400) {   
+        return response.json().then(data => {
+          return data.errors;
+        });
+      }
+      else {
+        throw new Error();
+      }
+      
+    }
+
     async createUser(user) {
         const response = await this.api('/users', 'POST', user);
         if (response.status === 201) {
@@ -69,23 +100,9 @@ export default class Data {
         }
     }
 
-    // async getCourseDetail(id) {
-    //   const response = await this.api(`/courses/${id}`, 'GET');
-    //   if (response.status === 200) {
-    //       return [];
-    //   } else if (response.status === 400) {
-    //       return response.json().then(data => {
-    //           return data.errors;
-    //       });
-    //   }
-    //   else {
-    //       throw new Error();
-    //   }
-    // }
-
     async deleteCourse(id, emailAddress, password) {
       const response = await this.api(`/courses/${id}`, 'DELETE', null, true, {emailAddress, password})
-      if (response.status === 200) {
+      if (response.status === 204) {
         return [];
       }
       else if (response.status === 403) {    //403 forgidden

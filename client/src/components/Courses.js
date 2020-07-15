@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import NotFound from './NotFound';
 import Course from './Course';
-import config from '../config';
 
 
 export default class Courses extends Component {
@@ -11,10 +10,13 @@ export default class Courses extends Component {
     };
 
     async componentDidMount() {
-        const apiUrl = `${config.apiBaseUrl}/courses`;
-        await fetch(apiUrl)
-          .then((response) => response.json())
-          .then((data) => {console.log('Courses:', data);this.setState({courses: data})})
+        const { context } = this.props;
+        context.data.getCourses()
+            .then(response => {
+                this.setState({
+                    courses: response
+                })
+            })
       }
 
     render() {
