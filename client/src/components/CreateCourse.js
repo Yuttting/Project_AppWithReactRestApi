@@ -107,7 +107,8 @@ export default class CreateCourse extends Component {
     submit = () => {
         const { context } = this.props;
         //const { from } = this.props.location.state || {from: {pathname: '/authenticated'}}
-        const { emailAddress, password, id } = context.authenticatedUser;
+        const { emailAddress, id } = context.authenticatedUser;
+        const password = context.unhashedPass;
         const userId = id;
         const {
             title,
@@ -127,9 +128,9 @@ export default class CreateCourse extends Component {
         } 
 
         context.data.createCourse(course, emailAddress, password)
-            .then((errors) => {
-                if (errors && errors.length > 0) {
-                    this.setState({ errors });
+            .then((course) => {
+                if (course == null) {
+                    this.setState({ errors: ['Title and Course description are required.']});
                   } else {
                     this.props.history.push('/');
                 }

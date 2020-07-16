@@ -30,9 +30,10 @@ export default class Data {
           return response.json().then(data => data);
         }
         else if (response.status === 401) {   //401 Unauthorized
-          return response.json().then(data => {
-            return data.errors;
-        });
+        //   return response.json().then(data => {
+        //     return data.errors;
+        // });
+          return null;
         }
         else {
           throw new Error();
@@ -44,7 +45,7 @@ export default class Data {
       if (response.status === 200) {
         return response.json().then(data => data);
       }
-      else if (response.status === 400) {   
+      else if (response.status === 400) {   //400 bad request
         return response.json().then(data => {
           return data.errors;
         });
@@ -90,10 +91,8 @@ export default class Data {
         const response = await this.api('/courses', 'POST', course, true, {emailAddress, password});
         if (response.status === 201) {
             return [];
-        } else if (response.status === 400) {
-            return response.json().then(data => {
-                return data.errors;
-            });
+        } else if (response.status === 400 ||response.status === 500) {
+            return null;
         }
         else {
             throw new Error();
@@ -120,9 +119,13 @@ export default class Data {
         if (response.status === 204) {
           return [];
         }
+        else if (response.status === 500) {
+          return null;
+        }
         else if (response.status === 400|| response.status === 403) {   
           return response.json().then(data => {
-            return data.errors;
+            //console.log(data)
+            return data;
           });
         }
         else {

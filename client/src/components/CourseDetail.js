@@ -42,7 +42,7 @@ export default class CourseDetail extends Component {
                 <div className="bounds">
                     <div className="grid-100">
                         <span>
-                            <Link className="button" to={`/courses/${this.state.course.id}/update-course`}>Update Course</Link>
+                            <Link className="button" to={`/courses/${this.state.course.id}/update`}>Update Course</Link>
                             {/* <a className="button" href="/">Delete Course</a> */}
                             <button className="button" onClick={this.delete}>Delete Course</button>
                         </span>
@@ -86,7 +86,8 @@ export default class CourseDetail extends Component {
         const { context } = this.props;
         const id = this.props.match.params.id
         if (context.authenticatedUser){
-            const { password, emailAddress } = context.authenticatedUser;
+            const { emailAddress } = context.authenticatedUser;
+            const password = context.unhashedPass;
             context.data.deleteCourse(id, emailAddress, password)
                 .then( errors => {
                     if (errors && errors.length === 0) {
@@ -100,7 +101,9 @@ export default class CourseDetail extends Component {
                     console.log(err);
                     this.props.history.push('/error')
                 })
-        } 
+        } else {
+            this.props.history.push('/forbidden'); 
+        }
     }
 }
 

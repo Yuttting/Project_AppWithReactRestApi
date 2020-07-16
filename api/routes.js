@@ -36,8 +36,10 @@ const authenticateUser = async (req, res, next) => {
   
       if (userObj) {
         const user = userObj.dataValues;
-        const authenticated = await bcryptjs
-          .compare(credentials.pass, user.password)
+        const authenticated = bcryptjs.compareSync(credentials.pass, user.password);
+        // console.log(credentials.pass)
+        // console.log(user.password)
+        // console.log(authenticated)
         if (authenticated) {
           // Store the user on the Request object.
           req.currentUser = user;
@@ -73,7 +75,14 @@ function asyncHandler(cb) {
 }
 
 //GET /api/users 200 - Returns the currently authenticated user
-router.get('/users', authenticateUser, asyncHandler(async(req, res) => {
+router.get('/users',[
+  check('emailAddress')
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage('Please provide a value for "emailAddress"'),
+  check('password')
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage('Please provide a value for "password"'),
+], authenticateUser, asyncHandler(async(req, res) => {
 
     const user = req.currentUser;
 
@@ -173,28 +182,14 @@ router.get('/courses/:id', asyncHandler(async(req, res, next) => {
 }));
 
 // POST /api/courses 201 - Creates a course, sets the Location header to the URI for the course, and returns no content
-router.post('/courses', [
-  check('title')
-    .exists({ checkNull: true, checkFalsy: true })
-    .withMessage('Please provide a value for "title"'),
-  check('description')
-    .exists({checkNull: true, checkFalsy: true})
-    .withMessage('Please provide a value for "description"')
-], authenticateUser, asyncHandler(async(req,res) => {
+router.post('/courses', authenticateUser, asyncHandler(async(req,res) => {
   const course = await Course.create(req.body);
   const id = course.id;
   res.status(201).location(`/courses/${id}`).end();
 }));
 
 // PUT /api/courses/:id 204 - Updates a course and returns no content
-router.put('/courses/:id', [
-  check('title')
-    .exists({ checkNull: true, checkFalsy: true })
-    .withMessage('Please provide a value for "title"'),
-  check('description')
-    .exists({checkNull: true, checkFalsy: true})
-    .withMessage('Please provide a value for "description"')
-], authenticateUser, asyncHandler(async(req, res) => {
+router.put('/courses/:id', authenticateUser, asyncHandler(async(req, res) => {
   const course = await Course.findByPk(req.params.id);
   //console.log(course)
   if(course) {
