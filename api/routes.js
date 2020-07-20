@@ -83,7 +83,6 @@ router.get('/users',[
     .exists({ checkNull: true, checkFalsy: true })
     .withMessage('Please provide a value for "password"'),
 ], authenticateUser, asyncHandler(async(req, res) => {
-
     const user = req.currentUser;
 
     res.json({
@@ -126,7 +125,7 @@ router.post('/users', [
     if (!errors.isEmpty()) {
       // Use the Array `map()` method to get a list of error messages.
       const errorMessages = errors.array().map(error => error.msg);
-  
+      console.log(errorMessages)
       // Return the validation errors to the client.
       return res.status(400).json({ errors: errorMessages });
     }
@@ -182,16 +181,42 @@ router.get('/courses/:id', asyncHandler(async(req, res, next) => {
 }));
 
 // POST /api/courses 201 - Creates a course, sets the Location header to the URI for the course, and returns no content
-router.post('/courses', authenticateUser, asyncHandler(async(req,res) => {
+router.post('/courses', [
+  check('title')
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage('Please provide a value for "title"'),
+  check('description')
+    .exists({checkNull: true, checkFalsy: true})
+    .withMessage('Please provide a value for "description"')
+], authenticateUser, asyncHandler(async(req,res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const errorMessages = errors.array().map(error => error.msg);
+    return res.status(400).json({ errors: errorMessages });
+  }
+  
   const course = await Course.create(req.body);
   const id = course.id;
   res.status(201).location(`/courses/${id}`).end();
 }));
 
 // PUT /api/courses/:id 204 - Updates a course and returns no content
-router.put('/courses/:id', authenticateUser, asyncHandler(async(req, res) => {
+router.put('/courses/:id', [
+  check('title')
+    .exists({ checkNull: true, checkFalsy: true })
+    .withMessage('Please provide a value for "title"'),
+  check('description')
+    .exists({checkNull: true, checkFalsy: true})
+    .withMessage('Please provide a value for "description"')
+], authenticateUser, asyncHandler(async(req, res) => {
   const course = await Course.findByPk(req.params.id);
-  //console.log(course)
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const errorMessages = errors.array().map(error => error.msg);
+    return res.status(400).json({ errors: errorMessages });
+  }
+  
   if(course) {
     if(course.userId == req.currentUser.id) {
       await course.update(req.body);

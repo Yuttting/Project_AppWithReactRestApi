@@ -141,10 +141,10 @@ export default class CreateCourse extends Component {
          const courseId = this.props.match.params.id;
          context.data.updateCourse(courseId, course, emailAddress, password)
             .then (errors => {
-                if (errors == null) {
-                    this.setState({ errors: ['Title and Course description are required.']});
+                if (errors.length > 0) {
+                    this.setState({ errors });
                 }
-                else if (errors && errors.length === 0) {
+                else if (errors.length === 0) {
                     this.props.history.push(`/courses/${courseId}`); 
                 } else {
                     this.props.history.push('/forbidden'); 

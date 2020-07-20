@@ -91,8 +91,10 @@ export default class Data {
         const response = await this.api('/courses', 'POST', course, true, {emailAddress, password});
         if (response.status === 201) {
             return [];
-        } else if (response.status === 400 ||response.status === 500) {
-            return null;
+        } else if (response.status === 400 ) {
+          return response.json().then(data => {
+            return data.errors;
+          });
         }
         else {
             throw new Error();
@@ -119,13 +121,12 @@ export default class Data {
         if (response.status === 204) {
           return [];
         }
-        else if (response.status === 500) {
+        else if (response.status === 403) {
           return null;
         }
-        else if (response.status === 400|| response.status === 403) {   
+        else if (response.status === 400)  {
           return response.json().then(data => {
-            //console.log(data)
-            return data;
+            return data.errors;
           });
         }
         else {
