@@ -41,12 +41,8 @@ export default class CourseDetail extends Component {
             <div className="actions--bar">
                 <div className="bounds">
                     <div className="grid-100">
-                        <span>
-                            <Link className="button" to={`/courses/${this.state.course.id}/update`}>Update Course</Link>
-                            {/* <a className="button" href="/">Delete Course</a> */}
-                            <button className="button" onClick={this.delete}>Delete Course</button>
-                        </span>
-                            <Link className="button button-secondary" to="/">Return to List</Link></div>
+                        {this.authenticated()}
+                    </div>
                 </div>
             </div>
             
@@ -80,6 +76,21 @@ export default class CourseDetail extends Component {
             </div>
             </div>
         )
+    }
+
+    authenticated = () => {
+        if (this.props.context.authenticatedUser && this.props.context.authenticatedUser.id == this.state.course.userId) {
+            return (
+                <span>
+                    <Link className="button" to={`/courses/${this.state.course.id}/update`}>Update Course</Link>
+                    {/* <a className="button" href="/">Delete Course</a> */}
+                    <button className="button" onClick={this.delete}>Delete Course</button>
+                    <Link className="button button-secondary" to="/">Return to List</Link>
+                </span>
+            )
+        } else {
+            return  <Link className="button button-secondary" to="/">Return to List</Link>
+        }
     }
 
     delete = () => {
