@@ -1,3 +1,8 @@
+// This component provides the "Courses" screen by retrieving the list of courses
+// from the REST API's /api/courses route and rendering a list of courses. 
+// Each course needs to link to its respective "Course Detail" screen. 
+// This component also renders a link to the "Create Course" screen.
+
 import React, { Component } from 'react';
 import NotFound from './NotFound';
 import Course from './Course';
@@ -38,7 +43,7 @@ export default class Courses extends Component {
             <div className="bounds"> 
                 {allCourses}
                 <div className="grid-33">
-                    <a className="course--module course--add--module" href="create">
+                    <a className="course--module course--add--module" href="/courses/create">
                         <h3 className="course--add--title">
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 13 13" className="add">
                         <polygon points="7,6 7,0 6,0 6,6 0,6 0,7 6,7 6,13 7,13 7,7 13,7 13,6 "></polygon>

@@ -1,3 +1,9 @@
+// This component provides the "Course Detail" screen by retrieving the detail 
+// for a course from the REST API's /api/courses/:id route and rendering the course. 
+// The component also renders a "Delete Course" button that when clicked should 
+// send a DELETE request to the REST API's /api/courses/:id route in order to delete a course. 
+// This component also renders an "Update Course" button for navigating to the "Update Course" screen.
+
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 
@@ -7,6 +13,7 @@ export default class CourseDetail extends Component {
     }
 
     async componentDidMount() {
+        //get detailed info of the selected course from api
         const { context } = this.props;
         context.data.getCourseDetail(this.props.match.params.id)
             .then(response => {
@@ -17,7 +24,7 @@ export default class CourseDetail extends Component {
     }
 
     render() {
-
+        //seperate a whole paragraph of needed materials into a list of things
         let arr;
         let material;
         if(this.state.course.materialsNeeded) {
@@ -27,6 +34,7 @@ export default class CourseDetail extends Component {
             material = arr.map((item, index) => <li key={index}> {item} </li>);
         }
 
+        //breake the description into several parapragh; easy to read
         let paragraph;
         let description;
         if(this.state.course.description) {
@@ -41,7 +49,9 @@ export default class CourseDetail extends Component {
             <div className="actions--bar">
                 <div className="bounds">
                     <div className="grid-100">
-                        {this.authenticated()}
+                        {/* if the user is logged in and is the owner of the course, 
+                        show "update course" and "delete course" */}
+                        {this.authenticated()}   
                     </div>
                 </div>
             </div>
@@ -51,6 +61,7 @@ export default class CourseDetail extends Component {
                     <div className="course--header">
                         <h4 className="course--label">Course</h4>
                         <h3 className="course--title">{this.state.course.title}</h3>
+                        {/* show course owner name */}
                         <p>By {this.state.course.User? this.state.course.User.firstName : ''} {this.state.course.User? this.state.course.User.lastName : ''}</p>
                     </div>
                     <div className="course--description">
@@ -78,8 +89,10 @@ export default class CourseDetail extends Component {
         )
     }
 
+    // if the user is logged in and is the owner of the course, 
+    // show "update course" and "delete course" 
     authenticated = () => {
-        if (this.props.context.authenticatedUser && this.props.context.authenticatedUser.id == this.state.course.userId) {
+        if (this.props.context.authenticatedUser && this.props.context.authenticatedUser.id === this.state.course.userId) {
             return (
                 <span>
                     <Link className="button" to={`/courses/${this.state.course.id}/update`}>Update Course</Link>
@@ -93,6 +106,8 @@ export default class CourseDetail extends Component {
         }
     }
 
+    //if the owner of the course is logged in, s/he can delete the course,
+    //otherwise, redirect to 'forbidden' page
     delete = () => {
         const { context } = this.props;
         const id = this.props.match.params.id
