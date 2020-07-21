@@ -113,7 +113,6 @@ export default class CourseDetail extends Component {
         const courseId = this.props.match.params.id
         if (context.authenticatedUser){
             const {emailAddress, password} = context.authenticatedUser;
-            //const password = context.unhashedPass;
             context.data.deleteCourse(courseId, emailAddress, password)
                 .then( errors => {
                     

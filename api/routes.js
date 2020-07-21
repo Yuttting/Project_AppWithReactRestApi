@@ -18,16 +18,11 @@ const authenticateUser = async (req, res, next) => {
 
     // users arrray
     const users = await User.findAll();
-    //let users = Object.entries(usersObj);
-    //console.log(users);
 
     let message = null;
   
     // Get the user's credentials from the Authorization header.
     const credentials = auth(req);
-
-    // console.log(credentials)
-    // console.log(req.body)
   
     if (credentials) {
       // Look for a user whose `emailAddress` matches the credentials `name` property.
@@ -42,7 +37,6 @@ const authenticateUser = async (req, res, next) => {
         let authenticated
         authenticated = bcryptjs.compareSync(credentials.pass, user.password);
 
-        // console.log(user.password)
         // If fail, the password might already be hashed. So compare hashed passwords
         if (!authenticated){
           if(credentials.pass === user.password) {
