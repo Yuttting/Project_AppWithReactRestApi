@@ -119,8 +119,8 @@ export default class CreateCourse extends Component {
 
     submit = () => {
         const { context } = this.props;
-        const {emailAddress, id} = context.authenticatedUser;
-        const password = context.unhashedPass;
+        const {emailAddress, password, id} = context.authenticatedUser;
+        //const password = context.unhashedPass;
         const userId = id;
 
         const {

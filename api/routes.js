@@ -25,21 +25,31 @@ const authenticateUser = async (req, res, next) => {
   
     // Get the user's credentials from the Authorization header.
     const credentials = auth(req);
+
     // console.log(credentials)
     // console.log(req.body)
   
     if (credentials) {
       // Look for a user whose `emailAddress` matches the credentials `name` property.
-      const userObj = users.find(u => u.dataValues.emailAddress === credentials.name);
+      const userObj = await users.find(u => u.dataValues.emailAddress === credentials.name);
       
       //const user = user.find({emailAddress: credentials.name});
   
       if (userObj) {
         const user = userObj.dataValues;
-        const authenticated = bcryptjs.compareSync(credentials.pass, user.password);
-        // console.log(credentials.pass)
+
+        //compare unhashed password
+        let authenticated
+        authenticated = bcryptjs.compareSync(credentials.pass, user.password);
+
         // console.log(user.password)
-        // console.log(authenticated)
+        // If fail, the password might already be hashed. So compare hashed passwords
+        if (!authenticated){
+          if(credentials.pass === user.password) {
+            authenticated = true
+          } 
+        }
+
         if (authenticated) {
           // Store the user on the Request object.
           req.currentUser = user;
@@ -92,6 +102,7 @@ router.get('/users',[
         emailAddress: user.emailAddress,
         password: user.password
     });
+    
 }));
 
 //POST /api/users 201 - Creates a user, sets the Location header to "/", and returns no content
@@ -125,7 +136,7 @@ router.post('/users', [
     if (!errors.isEmpty()) {
       // Use the Array `map()` method to get a list of error messages.
       const errorMessages = errors.array().map(error => error.msg);
-      console.log(errorMessages)
+  
       // Return the validation errors to the client.
       return res.status(400).json({ errors: errorMessages });
     }
@@ -209,6 +220,8 @@ router.put('/courses/:id', [
     .exists({checkNull: true, checkFalsy: true})
     .withMessage('Please provide a value for "description"')
 ], authenticateUser, asyncHandler(async(req, res) => {
+  
+  
   const course = await Course.findByPk(req.params.id);
 
   const errors = validationResult(req);

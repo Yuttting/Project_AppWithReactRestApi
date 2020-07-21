@@ -8,7 +8,7 @@ export class Provider extends Component {
 
     state = {
         authenticatedUser: Cookies.getJSON('authenticatedUser') || null,
-        unhashedPass:Cookies.getJSON('unhashedPass')|| null
+        // unhashedPass:Cookies.getJSON('unhashedPass')|| null
     }
 
     constructor() {
@@ -17,10 +17,13 @@ export class Provider extends Component {
     }
 
     render() {
-        const { authenticatedUser, unhashedPass } = this.state;
+        const { 
+            authenticatedUser, 
+            // unhashedPass 
+        } = this.state;
         const value = {
             authenticatedUser,
-            unhashedPass,
+            // unhashedPass,
             data: this.data,
             actions: {
                 signIn: this.signIn,
@@ -41,11 +44,11 @@ export class Provider extends Component {
             this.setState(() => {
                 return {
                     authenticatedUser: user,
-                    unhashedPass: password
+                    // unhashedPass: password
                 };
             });
             Cookies.set('authenticatedUser', JSON.stringify(user), { expires: 7 });
-            Cookies.set('unhashedPass', JSON.stringify(password), { expires: 7 });
+            //Cookies.set('unhashedPass', JSON.stringify(password), { expires: 7 });
         }
         return user;
     }

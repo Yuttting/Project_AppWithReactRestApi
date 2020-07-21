@@ -110,13 +110,14 @@ export default class CourseDetail extends Component {
     //otherwise, redirect to 'forbidden' page
     delete = () => {
         const { context } = this.props;
-        const id = this.props.match.params.id
+        const courseId = this.props.match.params.id
         if (context.authenticatedUser){
-            const { emailAddress } = context.authenticatedUser;
-            const password = context.unhashedPass;
-            context.data.deleteCourse(id, emailAddress, password)
+            const {emailAddress, password} = context.authenticatedUser;
+            //const password = context.unhashedPass;
+            context.data.deleteCourse(courseId, emailAddress, password)
                 .then( errors => {
-                    if (errors && errors.length === 0) {
+                    
+                    if (errors===null || errors.length === 0) {
                         this.props.history.push('/'); 
                     } else {
                         this.setState({ errors });
