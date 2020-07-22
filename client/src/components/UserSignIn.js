@@ -73,6 +73,9 @@ export default class UserSignIn extends Component {
     const { from } = this.props.location.state || {from: {pathname: '/authenticated'}}
     const { emailAddress, password } = this.state;
 
+    //user can log in with his/her email address and password,
+    //if anything's missing || email address and password don't match,
+    //show 'Sign-in was unsuccessful'
     context.actions.signIn(emailAddress, password)
       .then((user) => {
         if(user === null) {

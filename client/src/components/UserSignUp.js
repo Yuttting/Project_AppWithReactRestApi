@@ -115,6 +115,8 @@ export default class UserSignUp extends Component {
             // confirmPassword,
         };
   
+      //create new user, if it's successful, sign in the user automatically 
+      //if not, display error messages
       context.data.createUser(user)
         .then( errors => {
           if (errors && errors.length > 0) {

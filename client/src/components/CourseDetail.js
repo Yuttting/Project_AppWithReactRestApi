@@ -6,6 +6,7 @@
 
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
+import Markdown from 'react-markdown'
 
 export default class CourseDetail extends Component {
     state = {
@@ -25,24 +26,24 @@ export default class CourseDetail extends Component {
 
     render() {
         //seperate a whole paragraph of needed materials into a list of things
-        let arr;
-        let material;
-        if(this.state.course.materialsNeeded) {
-            arr = this.state.course.materialsNeeded.split('*').filter(function(value){return value.length !== 0});
-        }
-        if(arr) {
-            material = arr.map((item, index) => <li key={index}> {item} </li>);
-        }
+        // let arr;
+        // let material;
+        // if(this.state.course.materialsNeeded) {
+        //     arr = this.state.course.materialsNeeded.split('*').filter(function(value){return value.length !== 0});
+        // }
+        // if(arr) {
+        //     material = arr.map((item, index) => <li key={index}> {item} </li>);
+        // }
 
         //breake the description into several parapragh; easy to read
-        let paragraph;
-        let description;
-        if(this.state.course.description) {
-            paragraph = this.state.course.description.split('\n');
-        }
-        if(paragraph) {
-            description = paragraph.map((p,index) => <span key={index}>{p}</span>)
-        }
+        // let paragraph;
+        // let description;
+        // if(this.state.course.description) {
+        //     paragraph = this.state.course.description.split('\n');
+        // }
+        // if(paragraph) {
+        //     description = paragraph.map((p,index) => <span key={index}>{p}</span>)
+        // }
         
         return (
             <div>
@@ -65,7 +66,8 @@ export default class CourseDetail extends Component {
                         <p>By {this.state.course.User? this.state.course.User.firstName : ''} {this.state.course.User? this.state.course.User.lastName : ''}</p>
                     </div>
                     <div className="course--description">
-                    <p>{description}</p>
+                    {/* <p>{description}</p> */}
+                    <Markdown source={this.state.course.description} />
                     </div>
                 </div>
                 <div className="grid-25 grid-right">
@@ -77,9 +79,10 @@ export default class CourseDetail extends Component {
                             </li>
                                 <li className="course--stats--list--item">
                                 <h4>Materials Needed</h4>
-                                <ul>
+                                {/* <ul>
                                     {material}
-                                </ul>
+                                </ul> */}
+                                <Markdown source={this.state.course.materialsNeeded} />
                             </li>
                         </ul>
                     </div>

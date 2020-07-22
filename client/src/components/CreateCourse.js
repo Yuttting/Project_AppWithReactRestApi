@@ -100,6 +100,7 @@ export default class CreateCourse extends Component {
         );
     }
 
+    //update this.state with input value
     change = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -111,12 +112,10 @@ export default class CreateCourse extends Component {
         });
     };
 
+    //submit the Create Course form
     submit = () => {
         const { context } = this.props;
-        //const { from } = this.props.location.state || {from: {pathname: '/authenticated'}}
-        //const { emailAddress, id } = context.authenticatedUser;
         const { emailAddress, password, id } = context.authenticatedUser;
-        //const password = context.unhashedPass;
         const userId = id;
         const {
             title,
@@ -149,6 +148,7 @@ export default class CreateCourse extends Component {
             });
     };
 
+    //discard changes
     cancel = () => {
         this.props.history.push('/');
     };

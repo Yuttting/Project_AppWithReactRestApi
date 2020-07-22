@@ -18,6 +18,7 @@ export default class CreateCourse extends Component {
     }
 
     async componentDidMount() {
+        //dispaly selected course details
         const { context } = this.props;
         context.data.getCourseDetail(this.props.match.params.id)
             .then(response => {
@@ -105,7 +106,7 @@ export default class CreateCourse extends Component {
         );
     }
 
-    
+    //update this.state using input value
     change = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -116,6 +117,7 @@ export default class CreateCourse extends Component {
             };
         });
     };
+
 
     submit = () => {
         const { context } = this.props;
@@ -138,6 +140,8 @@ export default class CreateCourse extends Component {
          }
 
          const courseId = this.props.match.params.id;
+
+         //update course details if the current user is the owner of the course
          context.data.updateCourse(courseId, course, emailAddress, password)
             .then (errors => {
                 if (errors.length > 0) {
@@ -155,6 +159,7 @@ export default class CreateCourse extends Component {
             })
     };
 
+    // go back to course detail page
     cancel = () => {
         const courseId = this.props.match.params.id;
         this.props.history.push(`/courses/${courseId}`);
